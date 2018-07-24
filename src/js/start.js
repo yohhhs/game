@@ -17,7 +17,11 @@ $('#goStart').on('click', function() {
             memberType: 1,
             giftId: giftId
         }, function(res) {
-            window.location.href = res.data
+            if (res.statusCode == 200) {
+                window.location.href = res.data
+            } else {
+                alert(res.msg)
+            }
         })
     }
 })

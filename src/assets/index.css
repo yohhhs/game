@@ -136,23 +136,22 @@ div.hearthot {
 	z-index: 10000
 }
 #gameoverPanel {
-	background: rgba(0,0,0,0.8) url(../img/gameover.png) center 30% no-repeat;
-	background-size: 230px 260px;
+	background: rgba(0,0,0,0.8) url(../img/gameover.png) center no-repeat;
+	background-size: 100% 100%;
 	top: 0
 }
 
-#gameoverPanel,#resultPanel {
+#gameoverPanel {
 	display: none;
 	height: 100%;
 	position: absolute;
 	width: 100%;
-	z-index: 10000
+	z-index: 99
 }
-
-#resultPanel{
-	background:url(../img/endpage.jpg) center top no-repeat;
+#resultPanel {
+	display: none;
+	z-index: 100;
 }
-
 #resultPanel,#resultPanel .weixin-share {
 	left: 0;
 	top: 0
@@ -233,4 +232,20 @@ div.hearthot {
 	margin-top: 12px;
 	border: 1px solid #6A6B6D;
 
+}
+#fx {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: rgba(0 ,0, 0, 0.7);
+	z-index: 9999;
+	display: none;
+}
+#fx img {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 40%;
 }

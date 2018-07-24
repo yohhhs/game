@@ -1,10 +1,22 @@
+function GetQueryString(name) {
+    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
+    var r = window.location.search.substr(1).match(reg)
+    if (r != null) {
+        return r[2]
+    } else {
+        return null
+    }
+}
+var memberType = GetQueryString('memberType')
+var parentId = GetQueryString('parentId')
+var giftId = GetQueryString('giftId')
 function Ship(ctx){
-	gameMonitor.im.loadImage(['../img/long.png']);
+	gameMonitor.im.loadImage(['./img/long.png']);
 	this.width = 133 / 1.5;
 	this.height = 174 / 1.5;
 	this.left = gameMonitor.w/2 - this.width/2;
 	this.top = gameMonitor.h - 2*this.height;
-	this.player = gameMonitor.im.createImage('../img/long.png');
+	this.player = gameMonitor.im.createImage('./img/long.png');
 
 	this.paint = function(){
 		ctx.drawImage(this.player, this.left, this.top, this.width, this.height);
@@ -69,12 +81,25 @@ function Ship(ctx){
                         console.log(gameMonitor.score)
                         gameMonitor.stop();
                         $('#gamepanel').unbind()
-						$('#gameoverPanel').show();
-						setTimeout(function(){
-							$('#gameoverPanel').hide();
-							$('#resultPanel').show();
-							gameMonitor.getScore();
-						}, 2000);
+                        $('#gamepanel').hide()
+                        $('#gameoverPanel').show();
+						// setTimeout(function(){
+						// 	$('#gameoverPanel').hide();
+						// 	$('#resultPanel').show();
+						// 	gameMonitor.getScore();
+						// }, 2000);
+						if (memberType == 1) {
+                            $.post('https://www.topasst.com/web/game/submitInfo', {
+                                memberType: memberType,
+                                giftId: giftId,
+                                parentId: parentId,
+                                score: gameMonitor.score
+                            }, function(res) {
+                                window.location.href = res.data
+                            })
+						} else {
+							$('#resultPanel').show()
+						}
 					}
 					else{
 						if (f.type==1) {
@@ -107,17 +132,17 @@ function Food(type, left, id){
 	this.top = -50;
 	this.speed = 0.04 * Math.pow(1.2, Math.floor(gameMonitor.time/this.speedUpTime));
 	this.loop = 0;
-	var p = '../img/yb.png'
+	var p = './img/yb.png'
 	if (this.type == 0) {
-        p = '../img/food1.png'
+        p = './img/food1.png'
         this.width = 50;
         this.height = 50;
 	} else if (this.type == 1) {
-        p = '../img/jiu.png'
+        p = './img/jiu.png'
         this.width = 52;
         this.height = 59;
 	} else {
-        p = '../img/bd.png'
+        p = './img/bd.png'
         this.width = 65;
         this.height = 40;
 	}
@@ -198,7 +223,7 @@ var gameMonitor = {
 		bg.onload = function(){
           	ctx.drawImage(bg, 0, 0, _this.bgWidth, _this.bgHeight);
 		}
-		bg.src = '../img/bg.png';
+		bg.src = './img/bg.png';
 
 		_this.initListener(ctx);
 
@@ -226,10 +251,10 @@ var gameMonitor = {
 
 		body.on(gameMonitor.eventType.start, '#guidePanel', function(){
 			$(this).hide();
-			_this.ship = new Ship(ctx);
-			_this.ship.paint();
-      		_this.ship.controll();
-			gameMonitor.run(ctx);
+            _this.ship = new Ship(ctx);
+            _this.ship.paint();
+            _this.ship.controll();
+            gameMonitor.run(ctx);
 		});
 
 		body.on(gameMonitor.eventType.start, '.share', function(){
@@ -398,3 +423,22 @@ if(!gameMonitor.isMobile()){
 }
 
 gameMonitor.init();
+$('#goStart').on('click', function() {
+    if ($('#name').val() !== '' && $('#tel').val() !== '') {
+        $.post('https://www.topasst.com/web/game/submitInfo', {
+            name: $('#name').val(),
+            mobile: $('#tel').val(),
+            memberType: 2,
+            giftId: giftId,
+			parentId: parentId,
+			score: gameMonitor.score
+        }, function(res) {
+        	if (res.statusCode === 200) {
+        		alert('提交成功')
+			} else {
+        		alert(res.msg)
+			}
+            // $('#fx').show()
+        })
+    }
+})
